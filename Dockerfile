@@ -1,12 +1,8 @@
 # 基础镜像
 FROM docker.io/tiger7/alpine:dev AS Builder
 
-# 作者信息
-# 注：这里重点参考了：https://www.cnblogs.com/zhujingzhi/p/9742085.html
-MAINTAINER Tiger Chan "tiger7chan@gmail.com"
-
 # 指定Nginx版本
-ARG NGINX_VERSION=1.17.8
+ARG NGINX_VERSION=1.21.4
 
 # 指定nginx的位置
 ARG NGINX_PATH=/usr/local/nginx
@@ -66,10 +62,6 @@ RUN CONFIG="\
 # 基础镜像
 FROM alpine:latest AS nginx-flv
 
-# 作者信息
-# 注：这里重点参考了：https://www.cnblogs.com/zhujingzhi/p/9742085.html
-MAINTAINER Tiger Chan "tiger7chan@gmail.com"
-
 # 指定nginx的位置
 ARG NGINX_PATH=/usr/local/nginx
 
@@ -83,7 +75,6 @@ COPY --from=Builder /var/log/nginx /var/log/nginx
 
 # 将目录下的文件copy到镜像中(默认的配置文件)
 COPY nginx.conf $NGINX_CONF
-COPY rtmp.conf $NGINX_PATH/conf/rtmp.conf
 # 拷贝启动命令
 COPY start.sh /etc/start.sh
 
@@ -110,7 +101,6 @@ RUN apk update \
 
 # 开放80和1935端口
 EXPOSE 80
-EXPOSE 1935
 
 # 使用这个指令允许用户自定义应用在收到 docker stop 所发送的信号，是通过重写 signal 库内的 stopsignal 来支持自定义信号的传递，在上层调用时则将用户自定义的信号传入底层函数
 STOPSIGNAL SIGTERM
